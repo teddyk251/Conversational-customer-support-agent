@@ -95,7 +95,7 @@ def query_chroma_and_generate_response(query_text: str, session_id: str = None, 
     
     results = db.similarity_search_with_relevance_scores(query_text, k=k)
     
-    if len(results) == 0 or results[0][1] < 0.7:
+    if len(results) == 0:
         return {
             "query_type": "chat",
             "response": "I'm sorry, but I couldn't find any relevant information to answer your question."
