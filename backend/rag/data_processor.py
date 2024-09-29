@@ -104,7 +104,7 @@ def query_chroma_and_generate_response(query_text: str, session_id: str = None, 
     context_text = "\n\n---\n\n".join([doc.metadata['summary'] for doc, _score in results])
     return context_text
 
-def get_chat_completion(messages: list, model_name: str = "llama3-70b-8192"):
+def get_chat_completion(messages: list, model_name: str = "gpt-4o-mini"):
     """
     Generates a chat completion using Groq's chat completion API, allowing for message history.
     
@@ -117,10 +117,10 @@ def get_chat_completion(messages: list, model_name: str = "llama3-70b-8192"):
         str: The assistant's response message content.
     """
     try:
-        client = Groq()
+        client =  OpenAI(api_key=openai_key)
         chat_completion = client.chat.completions.create(
-            messages=messages,
             model=model_name,
+            messages=messages
         )
         # Extract and return the response content
         return chat_completion.choices[0].message.content
