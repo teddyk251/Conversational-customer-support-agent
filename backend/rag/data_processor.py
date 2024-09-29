@@ -104,7 +104,7 @@ def query_chroma_and_generate_response(query_text: str, session_id: str = None, 
     context_text = "\n\n---\n\n".join([doc.metadata['summary'] for doc, _score in results])
     return context_text
 
-def get_chat_completion(messages: list, model_name: str = "llama-3.1-70b-versatile"):
+def get_chat_completion(messages: list, model_name: str = "llama3-70b-8192"):
     """
     Generates a chat completion using Groq's chat completion API, allowing for message history.
     
