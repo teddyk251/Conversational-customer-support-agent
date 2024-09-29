@@ -47,23 +47,23 @@ const AttachmentsForm = () => {
     ];
 
     return (
-        <Box borderRadius="lg" className="bg-white shadow-md rounded-lg w-full mt-5 border border-blue-700">
-            <Heading as="h2" borderTopRadius="lg" size="lg" className="mb-6 bg-blue-300 p-4 sm:p-6 border-b-2 border-b-blue-700" textAlign="left">
+        <Box borderRadius="lg" className="flex flex-col bg-white shadow-md rounded-lg w-full mt-5 border border-blue-700 items-start justify-start">
+            <Heading as="h2" borderTopRadius="lg" size="lg" className="mb-6 w-full bg-blue-300 p-4 sm:p-6 border-b-2 border-b-blue-700" textAlign="left">
                 Attachments
             </Heading>
 
-            <VStack spacing={4} align="stretch" className="p-4 sm:p-6">
+            <VStack spacing={4} align="stretch" className="flex p-4 sm:p-6  w-full items-start">
                 <Alert status="info" variant="subtle" className="mb-4">
                     <AlertIcon />
                     Passport photo must be a jpeg or jpg file and not exceed 200kb. Other attachments must be pdf files and not exceed 500kb.
                 </Alert>
 
-                <Heading as="h3" size="md" className="mb-2">Attachments</Heading>
+                <Heading as="h3" size="md" className="mb-2 w-full">Attachments</Heading>
                 {requiredAttachments.map((attachment, index) => (
                     <AttachmentItem key={index} label={`${index + 1}. ${attachment}`} />
                 ))}
 
-                <Heading as="h3" size="md" className="mb-2 mt-4">Optional Attachments</Heading>
+                <Heading as="h3" size="md" className="mb-2 mt-4 w-full">Optional Attachments</Heading>
                 {optionalAttachments.map((attachment, index) => (
                     <AttachmentItem key={index} label={`${index + 1}. ${attachment}`} isRequired={false} />
                 ))}

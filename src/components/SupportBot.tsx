@@ -4,12 +4,12 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 import { MdOutlineSend } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
+const apiUrl = import.meta.env.VITE_API_URL
 interface SupportBotProps {
-    // is_open: boolean;
     toggle: () => void;
 }
-
 const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
     const recorderControls = useAudioRecorder();
     const [messages, setMessages] = useState<{ type: 'user' | 'backend', content: string, isAudio: boolean }[]>([]);
@@ -17,16 +17,20 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
     const [loading, setLoading] = useState(false);
     const [messageType, setMessageType] = useState('audio');
     const chatContainerRef = useRef<HTMLDivElement>(null);
-    const [language, setLanguage] = useState('en');
-    // const [isInitialized, setIsInitialized] = useState(false);
-
+    const [language, setLanguage] = useState<"en" | "rw" | "sw" | "fr">('en');
     const addAudioElement = async (blob: Blob) => {
+        blob = new Blob([blob],
+            {
+                type: 'audio/wav',
+
+            },
+        );
         const url = URL.createObjectURL(blob);
         setMessages(prev => [...prev, { type: 'user', content: url, isAudio: true }]);
         setLoading(true);
-
+        // console.log("temp_URL", url);
         try {
-            const backendResponse = await sendToBackend(blob);
+            const backendResponse = await sendToBackend(blob, language);
             setMessages(prev => [...prev, { type: 'backend', content: backendResponse.content, isAudio: backendResponse.isAudio }]);
         } catch (error) {
             console.error("Error sending audio to backend:", error);
@@ -55,21 +59,58 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
 
     const sendTextToBackend = async (text: string): Promise<{ content: string, isReq: boolean }> => {
         // Simulating backend call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const isReq = Math.random() > 0.5;
-        return {
-            content: isReq ? 'Yes' : `We at the application have seen your request currently processing ${text}`,
-            isReq
-        };
+        try {
+            const response = await axios.post(`${apiUrl}/process`, { "text":text },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'Accept': 'application/json',
+                    },
+                    params: {
+                        lang: language
+                    }
+                });
+            const data = response.data;
+            if (data.response) {
+                return { content: data.response, isReq: false };
+            }
+            return { content: data.redirect_url, isReq: true };
+
+        }
+        catch (error) {
+            console.error("Error sending text to backend:", error);
+            return { content: "Error processing message", isReq: false };
+        }
     };
 
-    const sendToBackend = async (blob: Blob): Promise<{ content: string, isAudio: boolean }> => {
-        // Simulating backend call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const isAudioResponse = Math.random() > 0.5;
-        return isAudioResponse
-            ? { content: URL.createObjectURL(blob), isAudio: true }
-            : { content: 'Yes', isAudio: false };
+    const sendToBackend = async (blob: Blob, lang: "en" | "rw" | "sw" | "fr"): Promise<{ content: string, isAudio: boolean }> => {
+        const formData = new FormData();
+        formData.append('file', blob, 'audio.wav');
+
+        try {
+            const response = await axios.post(`${apiUrl}/process`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                },
+                params: {
+                    lang: lang
+                }
+            });
+
+            if (response.data.audio) {
+                console.log("Audio response", response.data.audio);
+                return { content: response.data.audio, isAudio: true };
+            }
+            return { content: response.data.redirect_url, isAudio: false };
+        }
+        catch (error) {
+            console.error("Error sending audio to backend:", error);
+            return { content: "Error processing audio", isAudio: false };
+        }
+
+
+
     };
 
     useEffect(() => {
@@ -93,7 +134,6 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
 
     return (
         <div>
-
             <Box className="bg-slate-100 rounded-xl shadow-lg w-[500px] h-[600px] z-50">
                 <div className="flex justify-between p-4 z-10 shadow-md">
                     <div className='flex items-center'>
@@ -110,13 +150,13 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
                             placeholder=""
                             ml={3}
                             style={{ width: '100px' }}
-                            onChange={(e) => setLanguage(e.target.value)}
+                            onChange={(e) => setLanguage(e.target.value as "en" | "rw" | "sw" | "fr")}
                             value={language}
                         >
                             <option value="en">English</option>
                             <option value="fr">French</option>
                             <option value="sw">Swahili</option>
-                            <option value="kw">Kinyarwanda</option>
+                            <option value="rw">Kinyarwanda</option>
                         </Select>
                     </div>
                     <IoIosCloseCircle className='text-3xl' onClick={() => { toggle(); }} />
@@ -176,6 +216,8 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
                                     addAudioElement(blob);
 
                                 }}
+                                downloadFileExtension='wav'
+                                // downloadOnSavePress={true}
                                 recorderControls={recorderControls}
                             />
                             {recorderControls.isRecording && (
