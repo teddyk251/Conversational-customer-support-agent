@@ -14,7 +14,24 @@ import {
     Stack,
 } from '@chakra-ui/react';
 
-const RequestDetailsForm = () => {
+interface RequestDetailsFormProps {
+    passportNumber: string;
+    setPassportNumber: (passportNumber: string) => void;
+    issuedDate: Date;
+    setIssuedDate: (issuedDate: Date) => void;
+    expiryDate: Date;
+    setExpiryDate: (expiryDate: Date) => void;
+}
+
+
+const RequestDetailsForm: React.FC<RequestDetailsFormProps> = ({
+    passportNumber,
+    setPassportNumber,
+    issuedDate,
+    setIssuedDate,
+    expiryDate,
+    setExpiryDate,
+}) => {
     return (
         <Box borderRadius="lg" className="bg-white shadow-md rounded-lg w-full mt-5 border border-blue-700">
             <Heading as="h2" borderTopRadius="lg" size="lg" className="mb-6 bg-blue-300 p-4 sm:p-6 border-b-2 border-b-blue-700" textAlign="left">
@@ -84,17 +101,27 @@ const RequestDetailsForm = () => {
 
                 <FormControl isRequired>
                     <FormLabel>Document number</FormLabel>
-                    <Input placeholder="Enter document number" defaultValue="674835906" />
+                    <Input placeholder="Enter document number" defaultValue="674835906"
+                        onChange={(e) => setPassportNumber(e.target.value)}
+                        value={passportNumber}
+                    />
                 </FormControl>
 
                 <FormControl isRequired>
                     <FormLabel>Issued date</FormLabel>
-                    <Input type="date" defaultValue="2024-09-01" />
+                    <Input type="date"
+                        defaultValue="2020-10-08"
+                        onChange={(e) => setIssuedDate(new Date(e.target.value))}
+                        value={issuedDate.toDateString()}
+                    />
                 </FormControl>
 
                 <FormControl isRequired>
                     <FormLabel>Expiry Date</FormLabel>
-                    <Input type="date" defaultValue="2030-10-08" />
+                    <Input type="date" defaultValue="2030-10-08"
+                        onChange={(e) => setExpiryDate(new Date(e.target.value))}
+                        value={expiryDate.toDateString()}
+                    />
                 </FormControl>
 
                 <FormControl>
