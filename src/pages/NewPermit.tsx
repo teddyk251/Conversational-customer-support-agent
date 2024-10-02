@@ -125,11 +125,11 @@ function NewPermit() {
 
     return (
         <div className="h-full w-full p-4 lg:px-80 flex flex-col items-start justify-start">
-            <div className="mb-5 flex items-start">
+            <div className="mt-32 mb-5 flex items-start">
                 <Link to="/" className="text-blue-500">Home</Link> / <span className="font-bold">New Permit</span>
             </div>
-            <PermitApplicationProgress />
-
+            {/* <PermitApplicationProgress /> */}
+            {/* <div></div> */}
             <ApplicantDetailsForm
                 surname={surname}
                 otherNames={otherNames}

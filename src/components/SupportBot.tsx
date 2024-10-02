@@ -67,7 +67,7 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
                         // 'Accept': 'application/json',
                     },
                     params: {
-                        lang: language
+                        lang: language==="en"?"en":language==="rw"?"rw":language==="sw"?"sw":"fr"
                     }
                 });
             const data = response.data;
@@ -91,7 +91,7 @@ const SupportBot: React.FC<SupportBotProps> = ({ toggle }) => {
             const response = await axios.post(`${apiUrl}/process`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Accept': 'application/json',
+                    // 'Accept': 'application/json',
                 },
                 params: {
                     lang: lang

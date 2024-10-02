@@ -18,10 +18,10 @@ function App() {
           <div className='mx-9 lg:mx-80 flex'>
             <img src={iremboLogo} alt="vite logo" className='' />
             <div className='w-full flex justify-end '>
-              <Link to="/contact" className='flex items-center justify-center p-4 bg-blue-500 rounded-lg hover:bg-blue-600 cursor-pointer'>
+              {/* <Link to="/contact" className='flex items-center justify-center p-4 bg-blue-500 rounded-lg hover:bg-blue-600 cursor-pointer'>
                 <MdOutlineContactSupport className='text-white text-sm lg:text-lg mr-2' />
                 <div className='text-white text-sm lg:text-lg'>Contact Us</div>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
